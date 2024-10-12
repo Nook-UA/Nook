@@ -1,3 +1,6 @@
 [submodule "nook_app"]
 	path = nook_app
 	url = https://github.com/Nook-UA/nook_app
+[submodule "nook_web"]
+	path = nook_web
+	url = https://github.com/Nook-UA/nook_client_web
