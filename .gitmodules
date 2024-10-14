@@ -4,3 +4,9 @@
 [submodule "nook_web"]
 	path = nook_web
 	url = https://github.com/Nook-UA/nook_client_web
+[submodule "nook_rest_api"]
+	path = nook_rest_api
+	url = https://github.com/Nook-UA/nook_rest_api
+[submodule "nook-docs"]
+	path = nook-docs
+	url = https://github.com/Nook-UA/Nook-UA.git
