@@ -10,3 +10,6 @@
 [submodule "nook-docs"]
 	path = nook-docs
 	url = https://github.com/Nook-UA/Nook-UA.git
+[submodule "nook_parking_detection"]
+	path = nook_parking_detection
+	url = https://github.com/Nook-UA/nook_parking_detection
