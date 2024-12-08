@@ -1,0 +1,80 @@
+services:
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./nook_rest_api
+      dockerfile: Dockerfile.test
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+      COGNITO_USER_POOL_ID: ${COGNITO_USER_POOL_ID}
+      COGNITO_APP_CLIENT_ID: ${COGNITO_APP_CLIENT_ID}
+      PARKSERVICE_URL: http://parking_detection:5000/
+    volumes:
+      - ./nook_rest_api:/api
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./nook_web
+      dockerfile: Dockerfile
+    container_name: nextjs-frontend
+    environment:
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      BACKEND_URL: http://backend:8000
+      PARKING_DETECTION_URL: http://parking_detection:5000
+      COGNITO_CLIENT_ID: ${COGNITO_CLIENT_ID}
+      COGNITO_CLIENT_SECRET: ${COGNITO_CLIENT_SECRET}
+      COGNITO_DOMAIN: ${COGNITO_DOMAIN}
+      COGNITO_POOL_ID: ${COGNITO_POOL_ID}
+      LOGOUT_URL: ${LOGOUT_URL}
+      NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./nook_web:/app
+    command: yarn dev
+
+  redis:
+    image: redis:latest
+    container_name: redis-server
+    ports:
+      - "6379:6379"
+    restart: always
+
+  parking_detection:
+    build:
+      context: ./nook_parking_detection
+      dockerfile: Dockerfile
+    container_name: parking_detection
+    ports:
+      - "5000:5000"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - redis
