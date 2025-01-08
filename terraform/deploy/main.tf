@@ -51,8 +51,19 @@ module "ecs" {
   domain = "es-ua.ddns.net"
   vpc_cidr_block = module.vpc.cidr_block
 
+  # ==== S3 ====
+  s3_url = "${module.s3.s3_bucket_name}.s3.eu-west-3.amazonaws.com/"
+  aws_access_key = module.s3.aws_access_key_id
+  aws_secret_key = module.s3.aws_secret_access_key
+  aws_bucket_name = module.s3.s3_bucket_name
+
   # ==== REDIS ====
   redis_host = trim("${module.redis.redis_endpoint}", ":6379")
   # redis_host = module.redis.redis_endpoint
   redis_port = 6379
 }
+
+module "s3" {
+  source = "./modules/s3"
+}
+

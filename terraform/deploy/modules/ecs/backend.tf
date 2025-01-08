@@ -66,6 +66,10 @@ resource "aws_ecs_task_definition" "rest_api_task_definition" {
 
         environment = [
             {
+                name = "S3_URL"
+                value = var.s3_url
+            },
+            {
                 name = "DB_HOST"
                 value = var.db_address
             },

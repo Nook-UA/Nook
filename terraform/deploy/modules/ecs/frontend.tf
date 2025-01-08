@@ -59,8 +59,23 @@ resource "aws_ecs_task_definition" "web_task_definition" {
                 awslogs-stream-prefix = "nook-web"
             }
         },
-
         environment = [
+            {
+                name = "AWS_BUCKET_NAME"
+                value = var.aws_bucket_name
+            },
+            {
+                name = "AWS_SECRET_KEY"
+                value = var.aws_secret_key
+            },
+            {
+                name = "AWS_ACCESS_KEY"
+                value = var.aws_access_key
+            },
+            {
+                name = "AWS_DEFAULT_REGION"
+                value = var.aws_default_region
+            },
             {
                 name = "NEXTAUTH_SECRET"
                 value = var.next_auth_secret

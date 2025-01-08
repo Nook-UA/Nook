@@ -87,3 +87,23 @@ variable "redis_port" {
     description = "port for redis"
     type = string
 }
+
+variable "aws_bucket_name" {
+    description = "name of the aws bucket"
+    type = string
+}
+
+variable "aws_secret_key" {
+    description = "secret key of the aws bucket"
+    type = string
+}
+
+variable "aws_access_key" {
+    description = "access key of the aws bucket"
+    type = string
+}
+
+variable "s3_url"{
+    description = "url of the s3 bucket"
+    type = string
+}
