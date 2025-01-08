@@ -19,11 +19,20 @@ module "rds" {
   db_password = var.db_password
 }
 
+module "redis" {
+  source = "./modules/redis"
+  private_subnet_ids = module.vpc.private_subnet_ids
+  vpc_id = module.vpc.vpc_id
+}
+
 module "cognito" {
   source = "./modules/cognito"
 }
 
 module "ecs" {
+
+  depends_on = [module.redis]
+
   source = "./modules/ecs"
   db_name = module.rds.db_name
   db_user = module.rds.db_user
@@ -39,4 +48,11 @@ module "ecs" {
   next_public_google_maps_api_key = var.next_public_google_maps_api_key
   cognito_client_secret = module.cognito.cognito_user_pool_client_secret
   cognito_domain_host = module.cognito.cognito_hosted_domain
+  domain = "es-ua.ddns.net"
+  vpc_cidr_block = module.vpc.cidr_block
+
+  # ==== REDIS ====
+  redis_host = trim("${module.redis.redis_endpoint}", ":6379")
+  # redis_host = module.redis.redis_endpoint
+  redis_port = 6379
 }

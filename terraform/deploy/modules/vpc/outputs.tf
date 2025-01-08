@@ -12,3 +12,8 @@ output "vpc_id" {
     value = aws_vpc.NookVPC.id
     description = "id of vpc"
 }
+
+output "cidr_block" {
+    value = aws_vpc.NookVPC.cidr_block
+    description = "cidr block of the vpc"
+}

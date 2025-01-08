@@ -41,10 +41,20 @@ resource "aws_cognito_user_pool_client" "user_pool_client" {
     "ALLOW_USER_PASSWORD_AUTH",
     "ALLOW_REFRESH_TOKEN_AUTH",
   ]
-  #TODO change url
   supported_identity_providers = ["COGNITO"]
-  callback_urls = ["http://localhost:3000/api/auth/callback/cognito"]
-  logout_urls   = ["http://localhost:3000/"]
+  callback_urls = ["https://es-ua.ddns.net/api/auth/callback/cognito"]
+  logout_urls   = ["https://es-ua.ddns.net/"]
+}
+
+resource "aws_cognito_user" "example" {
+  user_pool_id = aws_cognito_user_pool.user_pool.id
+  username     = "jonas"
+  password     = "jonas123"
+
+  attributes = {
+    email          = "jonas@gmail.com"
+    email_verified = true
+  }
 }
 
 resource "aws_cognito_user_pool_domain" "Nook-Domain" {

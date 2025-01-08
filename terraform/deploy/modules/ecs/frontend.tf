@@ -23,10 +23,6 @@ resource "aws_ecs_service" "nook_web_service" {
         field = "attribute:ecs.availability-zone"
     }
 
-    lifecycle {
-      ignore_changes = [desired_count]
-    }
-
     load_balancer {
         target_group_arn = aws_lb_target_group.web_tg.arn
         container_name   = "nook-web-container"
@@ -39,8 +35,6 @@ resource "aws_ecs_task_definition" "web_task_definition" {
     network_mode = "awsvpc"
     cpu = 256
     memory = 512
-    task_role_arn      = aws_iam_role.ecs_task_role.arn
-    execution_role_arn = aws_iam_role.ecs_exec_role.arn
 
     runtime_platform {
         operating_system_family = "LINUX"
@@ -73,11 +67,11 @@ resource "aws_ecs_task_definition" "web_task_definition" {
             },
             {
                 name = "BACKEND_URL"
-                value = "http://${aws_lb.lb.dns_name}/api"
+                value = "${aws_apigatewayv2_api.api_gateway.api_endpoint}/api"
             },
             {
                 name = "PARKING_DETECTION_URL"
-                value = "http://${aws_lb.lb.dns_name}/parking_detection"
+                value = "${aws_apigatewayv2_api.api_gateway.api_endpoint}/parking-detection"
             },
             {
                 name = "COGNITO_CLIENT_ID"
@@ -97,12 +91,16 @@ resource "aws_ecs_task_definition" "web_task_definition" {
             },
             {
                 name = "NEXT_PUBLIC_LOGOUT_URL"
-                value = "https://${var.cognito_domain_host}.auth.${var.aws_default_region}.amazoncognito.com/logout?client_id=${var.cognito_app_client_id}&logout_uri=http%3A%2F%2F${aws_lb.lb.dns_name}%2F"
+                value = "https://${var.cognito_domain_host}.auth.${var.aws_default_region}.amazoncognito.com/logout?client_id=${var.cognito_app_client_id}&logout_uri=https%3A%2F%2F${var.domain}%2F"
             },
             {
                 name = "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY"
                 value = var.next_public_google_maps_api_key
             },
+            {
+                name = "NEXTAUTH_URL"
+                value = "https://${var.domain}"
+            }
         ]
     }])
   

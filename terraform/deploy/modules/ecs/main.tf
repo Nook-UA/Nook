@@ -23,8 +23,8 @@ resource "aws_autoscaling_group" "asg" {
   protect_from_scale_in     = false
 
   min_size         = 1
-  desired_capacity = 1
-  max_size         = 2
+  desired_capacity = 3
+  max_size         = 3
 
   launch_template {
     id      = aws_launch_template.ecs_launch_template.id

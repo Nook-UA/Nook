@@ -67,3 +67,23 @@ variable "next_public_google_maps_api_key" {
   description = "google maps api key"
   type = string
 }
+
+variable "domain"{
+    description = "website domain"
+    type = string
+}
+
+variable "vpc_cidr_block" {
+    description = "cidr block of the vpc"
+    type = string
+}
+
+variable "redis_host" {
+    description = "address for redis"
+    type = string
+}
+
+variable "redis_port" {
+    description = "port for redis"
+    type = string
+}

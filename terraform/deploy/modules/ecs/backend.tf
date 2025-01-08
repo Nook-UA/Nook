@@ -8,7 +8,7 @@ resource "aws_ecs_service" "nook_rest_api_service" {
 
     network_configuration {
         subnets = var.private_subnet_ids
-        security_groups = [aws_security_group.nook_ec2_instance_security_group.id]
+        security_groups = [aws_security_group.backend_ec2.id]
         assign_public_ip = false
     }
 
@@ -28,7 +28,7 @@ resource "aws_ecs_service" "nook_rest_api_service" {
     }
 
     load_balancer {
-        target_group_arn = aws_lb_target_group.rest_api_tg.arn
+        target_group_arn = aws_lb_target_group.backend_target_group.arn
         container_name   = "nook-rest-api-container"
         container_port   = 8000
     }
@@ -39,9 +39,7 @@ resource "aws_ecs_task_definition" "rest_api_task_definition" {
     network_mode = "awsvpc"
     cpu = 256
     memory = 512
-    task_role_arn      = aws_iam_role.ecs_task_role.arn
-    execution_role_arn = aws_iam_role.ecs_exec_role.arn
-
+    
     runtime_platform {
         operating_system_family = "LINUX"
         cpu_architecture = "X86_64"
@@ -101,16 +99,15 @@ resource "aws_ecs_task_definition" "rest_api_task_definition" {
             },
             {
                 name = "PARKSERVICE_URL"
-                value = "${aws_lb.lb.dns_name}/parking_detection"
+                value = "${aws_apigatewayv2_api.api_gateway.api_endpoint}/parking-detection"
             }
         ]
     }])
   
 }
 
-resource "aws_security_group" "nook_ec2_instance_security_group" {
-    name = "nook_ec2_instance_security_group"
-    description = "nook_ec2_instance_security_group"
+resource "aws_security_group" "backend_ec2" {
+    name = "backend_ec2"
     vpc_id = var.vpc_id
     
     egress {
