@@ -35,6 +35,7 @@ resource "aws_s3_bucket_acl" "nook_bucket_acl" {
 }
 
 resource "aws_s3_bucket_policy" "public_bucket_policy" {
+  depends_on = [ aws_s3_bucket_public_access_block.public_access_block ]
   bucket = aws_s3_bucket.nook_bucket.id
 
   policy = jsonencode({

@@ -85,7 +85,7 @@ resource "aws_ecs_task_definition" "web_task_definition" {
                 value = "${aws_apigatewayv2_api.api_gateway.api_endpoint}/api"
             },
             {
-                name = "PARKING_DETECTION_URL"
+                name = "NEXT_PUBLIC_PARKING_DETECTION_URL"
                 value = "${aws_apigatewayv2_api.api_gateway.api_endpoint}/parking-detection"
             },
             {

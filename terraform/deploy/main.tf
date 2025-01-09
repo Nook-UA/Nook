@@ -52,7 +52,7 @@ module "ecs" {
   vpc_cidr_block = module.vpc.cidr_block
 
   # ==== S3 ====
-  s3_url = "${module.s3.s3_bucket_name}.s3.eu-west-3.amazonaws.com/"
+  s3_url = "https://${module.s3.s3_bucket_name}.s3.eu-west-3.amazonaws.com/"
   aws_access_key = module.s3.aws_access_key_id
   aws_secret_key = module.s3.aws_secret_access_key
   aws_bucket_name = module.s3.s3_bucket_name
