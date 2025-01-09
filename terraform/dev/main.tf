@@ -88,14 +88,14 @@ resource "aws_s3_bucket" "nook_bucket_dev" {
 }
 
 
-resource "aws_s3_bucket_ownership_controls" "nook_bucket_ownership" {
+resource "aws_s3_bucket_ownership_controls" "nook_bucket_ownership_dev" {
   bucket = aws_s3_bucket.nook_bucket_dev.id
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "public_access_block" {
+resource "aws_s3_bucket_public_access_block" "public_access_block_dev" {
   bucket = aws_s3_bucket.nook_bucket_dev.id
 
   block_public_acls       = false
@@ -106,14 +106,14 @@ resource "aws_s3_bucket_public_access_block" "public_access_block" {
 }
 
 
-resource "aws_s3_bucket_acl" "nook_bucket_acl" {
-  depends_on = [aws_s3_bucket_ownership_controls.nook_bucket_ownership]
+resource "aws_s3_bucket_acl" "nook_bucket_acl_dev" {
+  depends_on = [aws_s3_bucket_ownership_controls.nook_bucket_ownership_dev]
 
   bucket = aws_s3_bucket.nook_bucket_dev.id
   acl    = "private"
 }
 
-resource "aws_s3_bucket_policy" "public_bucket_policy" {
+resource "aws_s3_bucket_policy" "public_bucket_policy_dev" {
   bucket = aws_s3_bucket.nook_bucket_dev.id
 
   policy = jsonencode({
@@ -130,25 +130,25 @@ resource "aws_s3_bucket_policy" "public_bucket_policy" {
   })
 }
 
-resource "aws_iam_user" "s3_full_access_user" {
-  name = "s3-full-access-user"
+resource "aws_iam_user" "s3_full_access_user_dev" {
+  name = "s3-full-access-user-dev"
 }
 
-resource "aws_iam_user_policy_attachment" "s3_full_access_policy" {
-  user       = aws_iam_user.s3_full_access_user.name
+resource "aws_iam_user_policy_attachment" "s3_full_access_policy_dev" {
+  user       = aws_iam_user.s3_full_access_user_dev.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
-resource "aws_iam_access_key" "s3_user_access_key" {
-  user = aws_iam_user.s3_full_access_user.name
+resource "aws_iam_access_key" "s3_user_access_key_dev" {
+  user = aws_iam_user.s3_full_access_user_dev.name
 }
 
 output "aws_access_key_id" {
-  value = aws_iam_access_key.s3_user_access_key.id
+  value = aws_iam_access_key.s3_user_access_key_dev.id
 }
 
 output "aws_secret_access_key" {
-  value = aws_iam_access_key.s3_user_access_key.secret
+  value = aws_iam_access_key.s3_user_access_key_dev.secret
   sensitive = true
 }
 
